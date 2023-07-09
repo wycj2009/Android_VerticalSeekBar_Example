@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="VerticalSeekBar">
+        <attr name="min" format="integer" />
+        <attr name="max" format="integer" />
+        <attr name="progress" format="integer" />
+        <attr name="track" format="reference" />
+        <attr name="thumb" format="reference" />
+    </declare-styleable>
+</resources>
