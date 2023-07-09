@@ -66,7 +66,7 @@ class VerticalSeekBar @JvmOverloads constructor(
         val left: Int
             get() = 0
         val top: Int
-            get() = ((progress - minProgress) * (this@VerticalSeekBar.height - height).toFloat() / (maxProgress - minProgress)).roundToInt()
+            get() = ((maxProgress - progress) * track.height.toFloat() / (maxProgress - minProgress)).roundToInt()
         val right: Int
             get() = width
         val bottom: Int
@@ -110,7 +110,7 @@ class VerticalSeekBar @JvmOverloads constructor(
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val dh: Float = track.height.toFloat() / (maxProgress - minProgress)
-        progress = minProgress + ((event.y - track.top + (dh * 0.5f)) / dh).toInt()
+        progress = maxProgress - ((event.y - track.top + (dh * 0.5f)) / dh).toInt()
         return true
     }
 }
