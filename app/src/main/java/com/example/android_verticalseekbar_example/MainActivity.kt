@@ -14,8 +14,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.verticalSeekBar.onProgressChange = { progress: Int ->
-            Log.d("myLog", "${progress}")
+        binding.verticalSeekBar.onSeekBarChangeListener = object : VerticalSeekBar.OnSeekBarChangeListener {
+            override fun preProgressChange(progress: Int, isTouching: Boolean): Boolean {
+                return true
+            }
+
+            override fun onProgressChange(progress: Int) {
+                Log.d("myLog", "${progress}")
+            }
         }
     }
 }

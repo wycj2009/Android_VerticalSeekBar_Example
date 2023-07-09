@@ -37,11 +37,13 @@ class VerticalSeekBar @JvmOverloads constructor(
         set(value) {
             val coercedValue: Int = value.coerceAtLeast(minProgress).coerceAtMost(maxProgress)
             if (field == coercedValue) return
+            if (onSeekBarChangeListener?.preProgressChange(coercedValue, isTouching) == false) return
             field = coercedValue
-            onProgressChange?.invoke(field)
+            onSeekBarChangeListener?.onProgressChange(field)
             invalidate()
         }
-    var onProgressChange: ((progress: Int) -> Unit)? = null
+    var onSeekBarChangeListener: OnSeekBarChangeListener? = null
+    private var isTouching: Boolean = false
     private val track = object {
         var drawable: Drawable = ShapeDrawable(RectShape()).apply {
             paint.color = 0x22000000.toInt()
@@ -109,8 +111,23 @@ class VerticalSeekBar @JvmOverloads constructor(
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        val dh: Float = track.height.toFloat() / (maxProgress - minProgress)
-        progress = maxProgress - ((event.y - track.top + (dh * 0.5f)) / dh).toInt()
+        when (event.action and MotionEvent.ACTION_MASK) {
+            MotionEvent.ACTION_DOWN -> {
+                isTouching = true
+            }
+            MotionEvent.ACTION_MOVE -> {
+                val dh: Float = track.height.toFloat() / (maxProgress - minProgress)
+                progress = maxProgress - ((event.y - track.top + (dh * 0.5f)) / dh).toInt()
+            }
+            MotionEvent.ACTION_UP -> {
+                isTouching = false
+            }
+        }
         return true
+    }
+
+    interface OnSeekBarChangeListener {
+        fun preProgressChange(progress: Int, isTouching: Boolean): Boolean
+        fun onProgressChange(progress: Int)
     }
 }
