@@ -15,12 +15,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.verticalSeekBar.onSeekBarChangeListener = object : VerticalSeekBar.OnSeekBarChangeListener {
-            override fun preProgressChange(progress: Int, isTouching: Boolean): Boolean {
+            override fun preProgressChange(progress: Int): Boolean {
+                Log.d("myLog", "preProgressChange - progress=${progress}")
                 return true
             }
 
             override fun onProgressChange(progress: Int) {
-                Log.d("myLog", "${progress}")
+                Log.d("myLog", "onProgressChange - progress=${progress}")
+            }
+
+            override fun onStartTrackingTouch() {
+                Log.d("myLog", "onStartTrackingTouch")
+            }
+
+            override fun onStopTrackingTouch() {
+                Log.d("myLog", "onStopTrackingTouch")
             }
         }
     }

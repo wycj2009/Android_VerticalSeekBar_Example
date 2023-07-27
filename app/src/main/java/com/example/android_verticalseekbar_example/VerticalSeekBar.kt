@@ -37,19 +37,20 @@ class VerticalSeekBar @JvmOverloads constructor(
         set(value) {
             val coercedValue: Int = value.coerceAtLeast(minProgress).coerceAtMost(maxProgress)
             if (field == coercedValue) return
-            if (onSeekBarChangeListener?.preProgressChange(coercedValue, isTouching) == false) return
+            if (onSeekBarChangeListener?.preProgressChange(coercedValue) == false) return
             field = coercedValue
             onSeekBarChangeListener?.onProgressChange(field)
             invalidate()
         }
     var onSeekBarChangeListener: OnSeekBarChangeListener? = null
-    private var isTouching: Boolean = false
     private val track = object {
         var drawable: Drawable = ShapeDrawable(RectShape()).apply {
             paint.color = 0x22000000.toInt()
         }
         var width: Int = 0
         var height: Int = 0
+        var paddingLeft: Int = 0
+        var paddingRight: Int = 0
         val left: Int
             get() = 0
         val top: Int
@@ -65,6 +66,10 @@ class VerticalSeekBar @JvmOverloads constructor(
         }
         var width: Int = 0
         var height: Int = 0
+        var paddingLeft: Int = 0
+        var paddingTop: Int = 0
+        var paddingRight: Int = 0
+        var paddingBottom: Int = 0
         val left: Int
             get() = 0
         val top: Int
@@ -83,9 +88,15 @@ class VerticalSeekBar @JvmOverloads constructor(
             getDrawable(R.styleable.VerticalSeekBar_track)?.let {
                 track.drawable = it
             }
+            track.paddingLeft = getDimensionPixelSize(R.styleable.VerticalSeekBar_trackPaddingLeft, 0)
+            track.paddingRight = getDimensionPixelSize(R.styleable.VerticalSeekBar_trackPaddingRight, 0)
             getDrawable(R.styleable.VerticalSeekBar_thumb)?.let {
                 thumb.drawable = it
             }
+            thumb.paddingLeft = getDimensionPixelSize(R.styleable.VerticalSeekBar_thumbPaddingLeft, 0)
+            thumb.paddingTop = getDimensionPixelSize(R.styleable.VerticalSeekBar_thumbPaddingTop, 0)
+            thumb.paddingRight = getDimensionPixelSize(R.styleable.VerticalSeekBar_thumbPaddingRight, 0)
+            thumb.paddingBottom = getDimensionPixelSize(R.styleable.VerticalSeekBar_thumbPaddingBottom, 0)
         }
     }
 
@@ -101,11 +112,11 @@ class VerticalSeekBar @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         track.let {
-            it.drawable.setBounds(it.left, it.top, it.right, it.bottom)
+            it.drawable.setBounds(it.left + it.paddingLeft, it.top, it.right - it.paddingRight, it.bottom)
             it.drawable.draw(canvas)
         }
         thumb.let {
-            it.drawable.setBounds(it.left, it.top, it.right, it.bottom)
+            it.drawable.setBounds(it.left + it.paddingLeft, it.top + it.paddingTop, it.right - it.paddingRight, it.bottom - it.paddingBottom)
             it.drawable.draw(canvas)
         }
     }
@@ -113,21 +124,23 @@ class VerticalSeekBar @JvmOverloads constructor(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action and MotionEvent.ACTION_MASK) {
             MotionEvent.ACTION_DOWN -> {
-                isTouching = true
+                onSeekBarChangeListener?.onStartTrackingTouch()
             }
             MotionEvent.ACTION_MOVE -> {
                 val dh: Float = track.height.toFloat() / (maxProgress - minProgress)
                 progress = maxProgress - ((event.y - track.top + (dh * 0.5f)) / dh).toInt()
             }
             MotionEvent.ACTION_UP -> {
-                isTouching = false
+                onSeekBarChangeListener?.onStopTrackingTouch()
             }
         }
         return true
     }
 
     interface OnSeekBarChangeListener {
-        fun preProgressChange(progress: Int, isTouching: Boolean): Boolean
+        fun preProgressChange(progress: Int): Boolean
         fun onProgressChange(progress: Int)
+        fun onStartTrackingTouch()
+        fun onStopTrackingTouch()
     }
 }

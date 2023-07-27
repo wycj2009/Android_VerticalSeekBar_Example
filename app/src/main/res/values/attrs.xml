@@ -5,6 +5,12 @@
         <attr name="max" format="integer" />
         <attr name="progress" format="integer" />
         <attr name="track" format="reference" />
+        <attr name="trackPaddingLeft" format="dimension" />
+        <attr name="trackPaddingRight" format="dimension" />
         <attr name="thumb" format="reference" />
+        <attr name="thumbPaddingLeft" format="dimension" />
+        <attr name="thumbPaddingTop" format="dimension" />
+        <attr name="thumbPaddingRight" format="dimension" />
+        <attr name="thumbPaddingBottom" format="dimension" />
     </declare-styleable>
 </resources>

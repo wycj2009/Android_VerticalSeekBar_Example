@@ -18,5 +18,11 @@
         app:min="0"
         app:progress="0"
         app:thumb="@drawable/thumb"
-        app:track="@drawable/track" />
+        app:thumbPaddingBottom="0dp"
+        app:thumbPaddingLeft="0dp"
+        app:thumbPaddingRight="0dp"
+        app:thumbPaddingTop="0dp"
+        app:track="@drawable/track"
+        app:trackPaddingLeft="0dp"
+        app:trackPaddingRight="0dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
